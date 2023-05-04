@@ -172,6 +172,22 @@ def convert_appstore_language_code_to_deepl_language(language_code):
         return deepl.Language.TURKISH
     elif language_code == "uk":
         return deepl.Language.UKRAINIAN
+    elif language_code == "en-GB":
+        return deepl.Language.ENGLISH_BRITISH
+    elif language_code == "et":
+        return deepl.Language.ESTONIAN
+    elif language_code == "ko":
+        return deepl.Language.KOREAN
+    elif language_code == "lt":
+        return deepl.Language.LITHUANIAN
+    elif language_code == "lv":
+        return deepl.Language.LATVIAN
+    elif language_code == "nb":
+        return deepl.Language.NORWEGIAN
+    elif language_code == "pt-BR":
+        return deepl.Language.PORTUGUESE_BRAZILIAN
+    elif language_code == "sl":
+        return deepl.Language.SLOVENIAN
     else:
         return None
 

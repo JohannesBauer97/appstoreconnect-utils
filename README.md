@@ -20,8 +20,48 @@ Using [Deepl API](https://www.deepl.com/docs-api) to translate the changelog of 
 
 ### Limitations
 
-* Translation is limited to languages supported by Deepl API
 * Only versions with state `PREPARE_FOR_SUBMISSION` are selectable
+
+<details>
+  <summary>Click to see supported languages</summary>
+
+```
+BULGARIAN = "bg"
+CZECH = "cs"
+DANISH = "da"
+GERMAN = "de"
+GREEK = "el"
+ENGLISH = "en"  # Only usable as a source language
+ENGLISH_BRITISH = "en-GB"  # Only usable as a target language
+ENGLISH_AMERICAN = "en-US"  # Only usable as a target language
+SPANISH = "es"
+ESTONIAN = "et"
+FINNISH = "fi"
+FRENCH = "fr"
+HUNGARIAN = "hu"
+INDONESIAN = "id"
+ITALIAN = "it"
+JAPANESE = "ja"
+KOREAN = "ko"
+LITHUANIAN = "lt"
+LATVIAN = "lv"
+NORWEGIAN = "nb"
+DUTCH = "nl"
+POLISH = "pl"
+PORTUGUESE = "pt"  # Only usable as a source language
+PORTUGUESE_BRAZILIAN = "pt-BR"  # Only usable as a target language
+PORTUGUESE_EUROPEAN = "pt-PT"  # Only usable as a target language
+ROMANIAN = "ro"
+RUSSIAN = "ru"
+SLOVAK = "sk"
+SLOVENIAN = "sl"
+SWEDISH = "sv"
+TURKISH = "tr"
+UKRAINIAN = "uk"
+CHINESE = "zh"
+```
+
+</details>
 
 ### Requirements
 
