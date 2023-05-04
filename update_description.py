@@ -25,8 +25,6 @@ def main():
     # setup APIs
     translator, app_store_connect_api = setup_apis(args.config)
 
-    print(app_store_connect_api.token)
-
     # let user select app and version
     selected_app, selected_version = get_appid_version(app_store_connect_api)
 
