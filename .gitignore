@@ -1,5 +1,6 @@
 # Custom
 authkey.p8
+config_dev.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
