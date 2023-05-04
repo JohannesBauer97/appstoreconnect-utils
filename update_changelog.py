@@ -28,9 +28,8 @@ def main():
     # let user select app and version
     selected_app, selected_version = get_appid_version(app_store_connect_api)
 
-    # get all localization for selected app and version
-    localizations = get_localization(app_store_connect_api.token, selected_app.id, selected_version.version,
-                                     selected_version.platform)
+    # get all localizations for selected version
+    localizations = get_localization(app_store_connect_api.token, selected_version["id"])
     if localizations is None:
         return
 
@@ -207,19 +206,18 @@ def get_changelog_and_language(config_file_path):
     return changelog, changelog_language
 
 
-def get_localization(token, app_id, app_version, version_platform):
-    """Get localization for a given app and version
+def get_localization(token, version_id):
+    """Get localization from user
 
     Args:
     token (str): AppStoreConnect API token
-    app_id (str): App ID
-    app_version (str): App version
+    version_id (str): AppStoreConnect version id
 
     Returns:
-    list: List of localization ids
+    dict: AppStoreConnect localization
     """
     print("=== App Store Version Localizations ===")
-    localizations = get_all_localization_ids(token, app_id, app_version, version_platform)
+    localizations = get_all_localization_ids(token, version_id)
     print("Following localizations will be updated:")
     for localization in localizations:
         print(f"{localization['locale']} ", end=" ")
@@ -231,35 +229,35 @@ def get_localization(token, app_id, app_version, version_platform):
     return localizations
 
 
-def get_all_localization_ids(token, app_id, app_version, version_platform):
-    """Get all localization ids for a given app and version
+def get_all_localization_ids(token, version_id):
+    """Get all localization ids for a given version
 
     Args:
     token (str): AppStoreConnect API token
-    app_id (str): App ID
-    app_version (str): App version
+    version_id (str): AppStoreConnect version id
 
     Returns:
     list: List of localization ids
     """
-    url = f"https://api.appstoreconnect.apple.com/v1/apps/{app_id}/appStoreVersions?filter[versionString]={app_version}&filter[platform]={version_platform}&include=appStoreVersionLocalizations&limit=200"
+    url = f"https://api.appstoreconnect.apple.com/v1/appStoreVersions/{version_id}/appStoreVersionLocalizations" \
+          f"?limit=200"
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
     response = requests.get(url, headers=headers)
-    localization_ids = []
+    localizations = []
 
     if response.status_code == 200:
         data = json.loads(response.text)
-        for included_item in data["included"]:
-            if included_item["type"] == "appStoreVersionLocalizations":
-                localization_ids.append({
-                    "id": included_item["id"],
-                    "locale": included_item["attributes"]["locale"]
+        for localization in data["data"]:
+            if localization["type"] == "appStoreVersionLocalizations":
+                localizations.append({
+                    "id": localization["id"],
+                    "locale": localization["attributes"]["locale"]
                 })
 
-    return localization_ids
+    return localizations
 
 
 def get_appid_version(app_store_connect_api):
@@ -284,18 +282,49 @@ def get_appid_version(app_store_connect_api):
     print(f"Selected app: {selected_app.name}")
 
     print("=== Versions ===")
-    versions = app_store_connect_api.list_prerelease_versions(selected_app.id)
+    versions = get_prerelease_versions(app_store_connect_api.token, selected_app.id)
 
     if len(versions) == 0:
         print("No prerelease versions found")
         return None
 
     for i, version in enumerate(versions):
-        print(f"{i}: {version.version} - {version.platform}")
+        print(f"{i}: {version['versionString']} - {version['platform']}")
     selected_version = versions[int(input("Select version: "))]
-    print(f"Selected version: {selected_version.version} - {selected_version.platform}")
+    print(f"Selected version: {selected_version['versionString']} - {selected_version['platform']}")
 
     return selected_app, selected_version
+
+
+def get_prerelease_versions(token, appid):
+    """Get all prerelease versions
+
+    Args:
+    token (str): AppStoreConnect API token
+    appid (str): App ID
+
+    Returns:
+    list: List of prerelease versions
+    """
+    url = f"https://api.appstoreconnect.apple.com/v1/apps/{appid}/appStoreVersions?limit=200&filter[appStoreState]=PREPARE_FOR_SUBMISSION"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+    response = requests.get(url, headers=headers)
+    versions = []
+
+    if response.status_code == 200:
+        data = json.loads(response.text)
+        for version in data["data"]:
+            if version["type"] == "appStoreVersions":
+                versions.append({
+                    "id": version["id"],
+                    "platform": version["attributes"]["platform"],
+                    "versionString": version["attributes"]["versionString"],
+                })
+
+    return versions
 
 
 def setup_apis(config_file_path):
