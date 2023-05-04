@@ -29,7 +29,8 @@ def main():
     selected_app, selected_version = get_appid_version(app_store_connect_api)
 
     # get all localization for selected app and version
-    localizations = get_localization(app_store_connect_api.token, selected_app.id, selected_version.version)
+    localizations = get_localization(app_store_connect_api.token, selected_app.id, selected_version.version,
+                                     selected_version.platform)
     if localizations is None:
         return
 
@@ -206,7 +207,7 @@ def get_changelog_and_language(config_file_path):
     return changelog, changelog_language
 
 
-def get_localization(token, app_id, app_version):
+def get_localization(token, app_id, app_version, version_platform):
     """Get localization for a given app and version
 
     Args:
@@ -218,7 +219,7 @@ def get_localization(token, app_id, app_version):
     list: List of localization ids
     """
     print("=== App Store Version Localizations ===")
-    localizations = get_all_localization_ids(token, app_id, app_version)
+    localizations = get_all_localization_ids(token, app_id, app_version, version_platform)
     print("Following localizations will be updated:")
     for localization in localizations:
         print(f"{localization['locale']} ", end=" ")
@@ -230,7 +231,7 @@ def get_localization(token, app_id, app_version):
     return localizations
 
 
-def get_all_localization_ids(token, app_id, app_version):
+def get_all_localization_ids(token, app_id, app_version, version_platform):
     """Get all localization ids for a given app and version
 
     Args:
@@ -241,7 +242,7 @@ def get_all_localization_ids(token, app_id, app_version):
     Returns:
     list: List of localization ids
     """
-    url = f"https://api.appstoreconnect.apple.com/v1/apps/{app_id}/appStoreVersions?filter[versionString]={app_version}&include=appStoreVersionLocalizations"
+    url = f"https://api.appstoreconnect.apple.com/v1/apps/{app_id}/appStoreVersions?filter[versionString]={app_version}&filter[platform]={version_platform}&include=appStoreVersionLocalizations&limit=200"
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
