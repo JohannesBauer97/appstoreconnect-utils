@@ -77,6 +77,8 @@ python update_changelog.py
 
 Using [Deepl API](https://www.deepl.com/docs-api) to translate the description of your app to multiple languages.
 
+![Demo Video](https://user-images.githubusercontent.com/15695124/236243044-9dd2a202-c76a-4f3a-8dd5-43a2a7de0456.gif)
+
 ### Limitations
 
 * Only versions with state `PREPARE_FOR_SUBMISSION` are selectable
